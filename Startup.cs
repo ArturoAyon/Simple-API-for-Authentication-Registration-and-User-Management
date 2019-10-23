@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+
 
 namespace WebApi
 {
@@ -50,6 +52,14 @@ namespace WebApi
                     ValidateAudience = false
                 };
             });
+
+             services.Configure<UsersDatabaseSettings>(
+                Configuration.GetSection(nameof(UsersDatabaseSettings)));
+
+            services.AddSingleton<IDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<UsersDatabaseSettings>>().Value);
+
+            services.AddSingleton<UserService>();
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
