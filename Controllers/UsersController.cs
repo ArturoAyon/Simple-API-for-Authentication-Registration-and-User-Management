@@ -33,22 +33,24 @@ namespace WebApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users =  _userService.GetAll();
+            var users = _userService.GetAll();
             return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(string id)
         {
-            var user =  _userService.GetById(id);
+            var user = _userService.GetById(id);
 
-            if (user == null) {
+            if (user == null)
+            {
                 return NotFound();
             }
 
             // only allow admins to access other user records
-            var currentUserId = int.Parse(User.Identity.Name);
-            if (id != currentUserId && !User.IsInRole(Role.Admin)) {
+            var currentUserId = User.Identity.Name;
+            if (id != currentUserId && !User.IsInRole(Role.Admin))
+            {
                 return Forbid();
             }
 
